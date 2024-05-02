@@ -14,18 +14,18 @@ class Collection:
     self.data.append(document)
     index = len(self.data) - 1
     self.id_table[document.ID] = index
-    if self.serv: self.serv.add_document(self.name, document)
+    if hasattr(self, "serv"): self.serv.add_document(self.name, document)
     return index
 
   def rm(self,d_id: uuid.UUID):
     index = self.id_table[d_id]
     self.data.pop(index)
-    if self.serv: self.serv.add_document(self.name, d_id)
+    if hasattr(self, "serv"): self.serv.add_document(self.name, d_id)
     self.__indexTable__()
 
   def get(self,d_id: uuid.UUID):
     index = self.id_table.get(d_id)
-    if (index == None and self.serv != None):
+    if (index == None and hasattr(self, "serv")):
        doc = self.serv.get_document(d_id)
        if (doc != None):
          self.data.append(doc)
