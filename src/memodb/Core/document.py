@@ -25,5 +25,8 @@ class Document:
   
   def to_json(self) -> str:
      return json.dumps(self.__dict__)
+  
+  def __str__(self) -> str:
+     return json.dumps(self.__dict__)
     
 
