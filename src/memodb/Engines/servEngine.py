@@ -14,6 +14,12 @@ class Server:
         raise Exception("unable to connect")
 
 
+  def cache_clear(self):
+    self.list_collections.cache_clear()
+    self.get_all_documents.cache_clear()
+    self.get_document.cache_clear()
+
+
   @cache 
   def list_collections(self) -> list:
     collections = requests.get(url=self.url).json()
@@ -49,7 +55,8 @@ class Server:
 
   def find_document(self,collection_name,**params):
     url_base = f"{self.url}{collection_name}/find?"
-    for (k,v) in params:
+    for k in params:
+      v = params[k]
       url_base + f"{k}={v}&"
     url = url_base.rstrip('&')
     response = requests.get(url)
@@ -65,8 +72,10 @@ class Server:
   
   def add_document(self,collection_name,document: Document):
     url = f"{self.url}{collection_name}/_"
-    response = requests.post(url,json=document.to_json())
+    response = requests.post(url,data=document.to_json())
     if response.ok:
+      self.get_document.cache_clear()
+      self.get_all_documents.cache_clear() 
       return response.text
 
   def del_document(self,collection_name,ID):

@@ -17,6 +17,21 @@ class Collection:
     if hasattr(self, "serv"): self.serv.add_document(self.name, document)
     return index
 
+  def _find(self, **args) -> [Document]:
+    result = []
+    for k in args:
+      v = args[k]
+      for doc in self.data:
+        if doc.has(k,v):
+          result.append(doc)
+    return result
+
+  def find(self, **args) -> [Document]:
+    if hasattr(self, "serv"):
+      return self.serv.find_document(self.name, **args)
+    else:
+      return self._find(args)
+
   def rm(self,d_id: uuid.UUID):
     index = self.id_table[d_id]
     self.data.pop(index)
@@ -26,7 +41,7 @@ class Collection:
   def get(self,d_id: uuid.UUID):
     index = self.id_table.get(d_id)
     if (index == None and hasattr(self, "serv")):
-       doc = self.serv.get_document(d_id)
+       doc = self.serv.get_document(self.name, d_id)
        if (doc != None):
          self.data.append(doc)
          self.id_table[d_id] = len(self.data - 1)
