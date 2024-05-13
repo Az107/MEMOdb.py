@@ -27,7 +27,7 @@ class Queue:
   def add(self,data):
     self.lock.acquire()
     self.total+=1
-    self.q.insert(0,str(data))
+    self.q.insert(0,data)
     self.lock.release()
 
   
