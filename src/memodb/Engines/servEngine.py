@@ -1,5 +1,5 @@
 from functools import cache
-from ..Core import *
+from Core import *
 import requests
 import json
 
