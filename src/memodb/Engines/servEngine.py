@@ -2,6 +2,8 @@ from functools import cache
 from Core import *
 import requests
 import json
+import time
+from NGN import NGNbase
 
 
 class Server:
@@ -86,3 +88,36 @@ class Server:
   
   
 
+class Engine(NGNbase):
+  name = "Server"
+  def __init__(self, ctx=None) -> None:
+    super().__init__(ctx=ctx, front=False)
+    if ctx is not None:
+      self.ctx = ctx
+      ctx.add_queue(self.name)
+      msg = {
+          "out": True,
+          "content": "Starting"
+        }
+      ctx.qs[self.name].add(msg)
+      #ctx.qs[self.name].suscribe(self.do)
+    self.server = Server("http://localhost:8080")
+  
+  def do(self,msg):
+    if (msg["out"]): 
+      pass
+    
+
+  def run(self):
+    while True:
+      if self.ctx is not None:
+        msg = {
+          "out": False,
+          "msg": self.server.list_collections()
+        } 
+        self.ctx.qs[self.name].add(msg)
+      time.sleep(60)
+
+
+
+  

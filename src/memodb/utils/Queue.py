@@ -1,11 +1,12 @@
 import threading
 import time
 import datetime
-import Singleton
+from .Singleton import SingletonMeta
 
 class Queue:
   def __init__(self,wait_time = 5):
     self.q = []
+    self.total = 0
     self.subscriptors = []
     self.lock = threading.Lock()
     self.__wait_time__ = wait_time
@@ -17,14 +18,21 @@ class Queue:
     self.subscriptors.append(func)
     self.lock.release()
 
+  def clear(self):
+    self.lock.acquire()
+    self.q.clear();
+    self.lock.release();
+
   
   def add(self,data):
     self.lock.acquire()
-    self.q.insert(0,data)
+    self.total+=1
+    self.q.insert(0,str(data))
     self.lock.release()
 
   
   def __notify__(self):
+    if len(self.subscriptors) == 0: return
     data = self.q.pop()
     for subs in self.subscriptors:
       subs(data)
@@ -45,22 +53,24 @@ class Queue:
     
   
 class Error:
-  def __init__(self,msg, timestamp = time.time()) -> None:
+  def __init__(self,msg,owner="?", timestamp = time.time()) -> None:
     self.msg = msg
     self.timestamp = timestamp
+    self.owner = owner
 
 
-class ErrorQueue(Queue,metaclass=Singleton.SingletonMeta):
+
+class ErrorQueue(Queue,metaclass=SingletonMeta):
   def __init__(self) -> None:
     super().__init__(wait_time=1)
     super().suscribe(ErrorQueue.__print_error__)
 
-  def add(self,msg):
-    super().add(Error(msg))
+  def add(self,msg,owner):
+    super().add(Error(msg,owner=owner))
 
   def __print_error__(error: Error):
     date = datetime.datetime.fromtimestamp(error.timestamp)
-    print(f"[{date}]: {error.msg}")
+    print(f"[{date}][{error.owner}]: {error.msg}")
 
   
   

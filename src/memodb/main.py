@@ -1,6 +1,7 @@
 from Core import *
-from Engines import replEngine
+from NGN import masterNGN
 
 
 if __name__ == "__main__":
-  replEngine.repl()
+  ngn = masterNGN()
+  ngn.NGNloader()
