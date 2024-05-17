@@ -60,12 +60,18 @@ class masterNGN:
             print("❌\n\t" + str(E))  
 
 
-  def Worker(path):
+
+  def __on_modified__(self,event):
+     self.__load_module__
+  
+  def Worker(self, path):
+    self.add_queue("_MASTER")
     observer = Observer()
-    # observer.schedule(event_handler, path, recursive=True)
+    self.qs.get("_MASTER").suscribe(lambda msg: observer.stop())
+    observer.schedule(self.__on_modified__, path, recursive=True)
     observer.start()
     try:
-        while True:
+        while observer.is_alive():
             time.sleep(1)
     finally:
         observer.stop()
@@ -75,7 +81,7 @@ class masterNGN:
   def NGNloader(self):
     # Start watchdog and reload each thread
     self.__load_all__("src/memodb/Engines/")
-    t = threading.Thread(target=self.Worker)
+    t = threading.Thread(target=self.Worker,args=("src/memodb/Engines/",))
     t.daemon = True
     t.start()
     if self.front_module is not None:
@@ -84,6 +90,10 @@ class masterNGN:
        print("Printing error traceback")
        for entry in self.errorQ.q:
            ErrorQueue.__print_error__(entry)
+    self.qs.get("_MASTER").add("stop")
+    print("Finishing tasks...",end="")
+    t.join();
+    print("OK")
 
 
 class NGNbase:
