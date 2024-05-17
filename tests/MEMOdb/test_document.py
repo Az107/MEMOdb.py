@@ -1,4 +1,4 @@
-from src.memodb.Core import Document
+from src.memodb import Document
 
 
 def test_creation():

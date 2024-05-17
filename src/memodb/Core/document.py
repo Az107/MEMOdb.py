@@ -2,7 +2,7 @@ import copy
 import uuid
 import json
 
-class Document:
+class Document(dict):
   def __setitem__(self, key, value):
       setattr(self, key, value)
 
