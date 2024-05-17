@@ -3,11 +3,11 @@ from ..Server import Server
 import uuid
 
 class Collection:
-  def __init__(self,name: str, url = None) -> None:
+  def __init__(self,name: str, server = None) -> None:
     self.name = name
     self.data = []
     self.id_table: [Document] = {}
-    if url != None: self.serv = Server(url)
+    if server is not None: self.serv = server
   
 
   def add(self, document: Document):
