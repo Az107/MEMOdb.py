@@ -5,6 +5,7 @@ from src.memodb import Collection, Document
 
 def test_creation():
   collection = Collection(name="users")
+  
   assert collection.name == "users"
 
 def test_add():
