@@ -10,4 +10,11 @@ class MEMOdb:
       self.server = Server(url)
 
   def create(self, name):
-    Collection(name, self.server)
+    collection = Collection(name, self.server)
+    self.collections.append(collection)
+
+  
+
+
+
+

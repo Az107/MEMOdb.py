@@ -1,5 +1,4 @@
 from .document import Document
-from ..Server import Server
 import uuid
 
 class Collection:

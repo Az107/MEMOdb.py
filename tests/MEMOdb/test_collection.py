@@ -1,5 +1,4 @@
 # from src.memodb.Core import Collection, Document
-import pytest
 from src.memodb import Collection, Document
 
 

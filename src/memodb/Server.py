@@ -57,7 +57,7 @@ class Server:
     url_base = f"{self.url}{collection_name}/find?"
     for k in params:
       v = params[k]
-      url_base + f"{k}={v}&"
+      url_base += f"{k}={v}&"
     url = url_base.rstrip('&')
     response = requests.get(url)
     if response.ok:
@@ -68,8 +68,6 @@ class Server:
         doc_list.append(doc)
       return doc_list
 
-    
-  
   def add_document(self,collection_name,document: Document):
     url = f"{self.url}{collection_name}/_"
     response = requests.post(url,data=document.to_json())
